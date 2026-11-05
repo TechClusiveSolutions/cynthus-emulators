@@ -31,6 +31,12 @@
                 }
               },
               {
+                "Name": "cynthus-profile-sub",
+                "Properties": {
+                  "MaxDeliveryCount": 10
+                }
+              },
+              {
                 "Name": "cynthus-analysis-sub",
                 "Properties": {
                   "MaxDeliveryCount": 10
