@@ -41,6 +41,12 @@
                 "Properties": {
                   "MaxDeliveryCount": 10
                 }
+              },
+              {
+                "Name": "cynthus-sub-core-worker",
+                "Properties": {
+                  "MaxDeliveryCount": 10
+                }
               }
             ]
           }
