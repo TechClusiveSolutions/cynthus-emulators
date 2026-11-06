@@ -47,6 +47,12 @@
                 "Properties": {
                   "MaxDeliveryCount": 10
                 }
+              },
+              {
+                "Name": "cynthus-sub-core-recipe",
+                "Properties": {
+                  "MaxDeliveryCount": 10
+                }
               }
             ]
           }
