@@ -45,6 +45,26 @@ services:
     logging:
       driver: json-file 
 
+  mail:
+    hostname: mail
+    container_name: cynthus-infra-mail
+    restart: unless-stopped
+    image: cynthus/infra-mail:latest
+    build:
+      context: ./containers/mail
+    environment:
+      TZ: '${TIME_ZONE}'
+    expose:
+      - '1025/tcp' # SMTP port; messages are kept here, never delivered
+    ports:
+      - '${MAIL_UI_PORT:-8025}:8025' # Inbox web page and HTTP API
+    networks:
+      net:
+        aliases:
+          - 'mail.cynthus.local' # Consistent hostname for all repos
+    logging:
+      driver: json-file
+
 networks:
   net:
     external: true
