@@ -53,6 +53,12 @@
                 "Properties": {
                   "MaxDeliveryCount": 10
                 }
+              },
+              {
+                "Name": "cynthus-sub-core-scheduler",
+                "Properties": {
+                  "MaxDeliveryCount": 10
+                }
               }
             ]
           }
