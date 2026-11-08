@@ -59,6 +59,12 @@
                 "Properties": {
                   "MaxDeliveryCount": 10
                 }
+              },
+              {
+                "Name": "cynthus-sub-core-shopping",
+                "Properties": {
+                  "MaxDeliveryCount": 10
+                }
               }
             ]
           }
