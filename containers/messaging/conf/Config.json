@@ -71,6 +71,12 @@
                 "Properties": {
                   "MaxDeliveryCount": 10
                 }
+              },
+              {
+                "Name": "cynthus-sub-core-logistics",
+                "Properties": {
+                  "MaxDeliveryCount": 10
+                }
               }
             ]
           }
