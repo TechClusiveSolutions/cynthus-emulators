@@ -65,6 +65,12 @@
                 "Properties": {
                   "MaxDeliveryCount": 10
                 }
+              },
+              {
+                "Name": "cynthus-chat-public-sub",
+                "Properties": {
+                  "MaxDeliveryCount": 10
+                }
               }
             ]
           }
