@@ -45,6 +45,41 @@ services:
     logging:
       driver: json-file 
 
+  rabbitmq:
+    # The RabbitMQ broker for SIGNAL_BROKER=rabbitmq (ADR-007). Off by default: start it with
+    # `docker compose --profile rabbitmq up -d rabbitmq`. Services declare their own exchanges and queues.
+    profiles:
+      - rabbitmq
+    hostname: rabbitmq
+    container_name: cynthus-infra-rabbitmq
+    restart: unless-stopped
+    image: rabbitmq:4.4-management
+    # Run as the rabbitmq user from the start: started as root, the image drops privileges with gosu and then cannot
+    # read its own Erlang cookie under Colima.
+    user: rabbitmq
+    environment:
+      TZ: '${TIME_ZONE}'
+      RABBITMQ_DEFAULT_USER: '${RABBITMQ_USER:-cynthus}'
+      RABBITMQ_DEFAULT_PASS: '${RABBITMQ_PASSWORD:-}'
+    volumes:
+      - 'rabbitmq-data:/var/lib/rabbitmq'
+    expose:
+      - '5672/tcp' # AMQP port for messaging
+    ports:
+      - '${RABBITMQ_UI_PORT:-15672}:15672' # Management page and HTTP API
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', '-q', 'ping']
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+      net:
+        aliases:
+          - 'rabbitmq.cynthus.local' # Consistent hostname for all repos
+    logging:
+      driver: json-file
+
   mail:
     hostname: mail
     container_name: cynthus-infra-mail
@@ -64,6 +99,9 @@ services:
           - 'mail.cynthus.local' # Consistent hostname for all repos
     logging:
       driver: json-file
+
+volumes:
+  rabbitmq-data:
 
 networks:
   net:

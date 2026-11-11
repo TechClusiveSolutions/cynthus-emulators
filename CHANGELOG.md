@@ -10,7 +10,7 @@ version and date.
 
 ## [Unreleased]
 
-- Nothing yet.
+- Added a RabbitMQ 4.4 broker (with the management page) to the dev stack for services that run with `SIGNAL_BROKER=rabbitmq`. It sits behind the `rabbitmq` compose profile, so a plain `docker compose up -d` is unchanged. It joins `cynthus_net` as `rabbitmq.cynthus.local`, takes its user and password from `RABBITMQ_USER` and `RABBITMQ_PASSWORD` in the untracked `.env`, keeps its data in a volume and has a health check. It runs as the `rabbitmq` user because the image's root-then-gosu start fails under Colima. The services declare their own queues, so there is no queue configuration here. Issue 26.
 
 ## [0.1.0] - 2026-11-08
 
