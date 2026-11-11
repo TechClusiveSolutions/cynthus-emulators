@@ -10,6 +10,10 @@ version and date.
 
 ## [Unreleased]
 
+- Nothing yet.
+
+## [0.1.0] - 2026-11-08
+
 - Add the Logistics service subscription cynthus-sub-core-logistics (#22) (#23)
 - Add the Chat service subscription cynthus-chat-public-sub (#20) (#21)
 - Rename the Scheduler subscription to cynthus-sub-scheduler (#18) (#19)
@@ -25,6 +29,3 @@ version and date.
 - Add CONFIG_PATH to environment for messaging service
 - Add service-bus config for the messaging service
 - Initial commit
-
-<!-- No tagged releases exist yet. The entries above are the commits merged to `dev`,
-newest first, as a backfill. The first tag is cut with the ecosystem 1.0 release set. -->
