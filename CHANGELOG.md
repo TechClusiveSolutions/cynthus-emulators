@@ -10,6 +10,7 @@ version and date.
 
 ## [Unreleased]
 
+- Documentation for screen readers (issue 28): Markdown is ASCII only, has no tables (lists instead), names the language of every code block, and `README.md` has the standard name. `.github/scripts/check_markdown.py` now enforces this, and checks that relative links resolve, in the `docs-lint` job; markdownlint covers every Markdown file.
 - Added a RabbitMQ 4.4 broker (with the management page) to the dev stack for services that run with `SIGNAL_BROKER=rabbitmq`. It sits behind the `rabbitmq` compose profile, so a plain `docker compose up -d` is unchanged. It joins `cynthus_net` as `rabbitmq.cynthus.local`, takes its user and password from `RABBITMQ_USER` and `RABBITMQ_PASSWORD` in the untracked `.env`, keeps its data in a volume and has a health check. It runs as the `rabbitmq` user because the image's root-then-gosu start fails under Colima. The services declare their own queues, so there is no queue configuration here. Issue 26.
 
 ## [0.1.0] - 2026-11-08
