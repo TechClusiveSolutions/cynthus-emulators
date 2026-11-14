@@ -10,7 +10,7 @@ version and date.
 
 ## [Unreleased]
 
-- Coverage gate (issue 34): CI runs the tests with `--cov-branch` and `.github/scripts/check_coverage.py` checks 90 percent of lines and 0 percent of branches separately.
+- Coverage gate (issue 34): CI runs the tests with `--cov-branch` and `.github/scripts/check_coverage.py` checks 90 percent of lines and 80 percent of branches separately.
 - Unix line endings (issue 32): `.gitattributes` (`* text=auto eol=lf`), `.editorconfig`, every text file committed with LF, and a CI check (`.github/scripts/check_line_endings.py`) that rejects CRLF.
 - README follows the standard quick-start structure (issue 30; cynthus#57): Description, Prerequisites, Installation, Minimal configuration, Gotchas, More documentation. The longer sections moved unchanged into `docs/`. `check_markdown.py` now checks the README headings.
 - Documentation for screen readers (issue 28): Markdown is ASCII only, has no tables (lists instead), names the language of every code block, and `README.md` has the standard name. `.github/scripts/check_markdown.py` now enforces this, and checks that relative links resolve, in the `docs-lint` job; markdownlint covers every Markdown file.
