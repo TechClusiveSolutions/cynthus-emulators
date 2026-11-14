@@ -1,35 +1,54 @@
-# Cynthus emulators
+# cynthus-emulators
 
-Local stand-ins for the cloud services, started with `docker compose up -d` on the `cynthus_net` network.
+## Description
 
-## Mail sink
+Local stand-ins for cloud services, run with Docker Compose on the `cynthus_net` network: a mail sink that keeps
+email instead of sending it, a RabbitMQ broker for the signal bus, and the Azure Service Bus emulator with its SQL
+Server store. They stand in for the real services only as far as the Cynthus stacks need.
 
-`mail` receives email over SMTP and keeps it, so email features can be built and tested without sending real mail.
-Nothing is delivered outside the host.
+## Prerequisites
 
-- **Connect from a service:** SMTP host `mail.cynthus.local`, port `1025`, no TLS, any login (or none).
-- **Read the inbox:** open `http://<host>:8025/` (change the port with `MAIL_UI_PORT`).
-- **Read it from a test or script:** `GET http://<host>:8025/api/v1/messages` lists messages, and
-  `GET /api/v1/message/latest` returns the newest, including its text, so a test can find a verification link.
-- **Clear it:** `DELETE /api/v1/messages`.
+- Docker with the Compose plugin.
+- The Docker network `cynthus_net`: `docker network create cynthus_net`.
 
-## RabbitMQ broker
+## Installation
 
-`rabbitmq` is the broker for `SIGNAL_BROKER=rabbitmq` (ADR-007 in the `cynthus` documentation repository). It has no
-connection limit of the Service Bus emulator's kind, so the whole stack can run against it. It is off by default.
+```sh
+git clone https://github.com/TechClusiveSolutions/cynthus-emulators.git
+cd cynthus-emulators
+docker network create cynthus_net
+# create .env (see Minimal configuration)
+docker compose up -d
+docker compose --profile rabbitmq up -d rabbitmq
+docker compose ps
+```
 
-- **Start it:** `docker compose --profile rabbitmq up -d rabbitmq`. Without the profile, `docker compose up -d` does not
-  start it.
-- **Settings in `.env`:** `RABBITMQ_USER` (default `cynthus`), `RABBITMQ_PASSWORD` (required: set it before the first
-  start; the broker keeps the user in its data volume) and `RABBITMQ_UI_PORT` (default `15672`). `.env` is never
-  committed.
-- **Connect from a service:** set `SIGNAL_BROKER=rabbitmq` and
-  `RABBITMQ_URL=amqp://<user>:<password>@rabbitmq.cynthus.local:5672/` in the service's untracked `.env`.
-- **Look at it:** open `http://<host>:15672/` and sign in with the user and password above. A signal that its handler
-  rejected waits in the queue `<subscription>.dlq`.
-- **No queue definitions here:** each service declares its own exchange, queue and dead-letter queue when it starts
-  (`docs/cynthus/messaging/broker.md` in cynthus-shared).
-- **Data:** kept in the `rabbitmq-data` volume. `docker compose --profile rabbitmq down -v` removes it. If you change a
-  queue's delivery limit or TTL, delete the old queue first; RabbitMQ refuses to redeclare it with other settings.
-- **Why it runs as the `rabbitmq` user:** started as root, the image drops privileges with `gosu` and then cannot read
-  its own Erlang cookie under Colima (`eacces`).
+The second compose command starts RabbitMQ, which is off by default. `docker compose ps` shows the containers as
+`healthy` when they are ready.
+
+## Minimal configuration
+
+Create `.env` next to `docker-compose.yml`. It is git-ignored; never commit it.
+
+- `STORE_PASSWORD`: the password of the SQL Server store behind the Service Bus emulator.
+- `TIME_ZONE`: for example `UTC`.
+- `RABBITMQ_PASSWORD`: required before the first start of RabbitMQ (and `RABBITMQ_USER`, default `cynthus`).
+- `MAIL_UI_PORT`: optional, the host port of the mail inbox page (default `8025`).
+
+## Gotchas
+
+- RabbitMQ keeps its user in the `rabbitmq-data` volume, so set `RABBITMQ_PASSWORD` before the first start; changing
+  it later does not change the stored user.
+- The mail sink delivers nothing outside the host. Read the mail at `http://<host>:8025/`.
+- The Service Bus emulator has a small connection limit (10 by default) that the whole Cynthus stack can exceed;
+  RabbitMQ has no such limit.
+- Services reach the emulators by their network names (`mail.cynthus.local`, `rabbitmq.cynthus.local`), so they must
+  be on `cynthus_net`.
+
+## More documentation
+
+- [`docs/mail-sink.md`](docs/mail-sink.md): connecting to the mail sink, reading and clearing the inbox.
+- [`docs/rabbitmq.md`](docs/rabbitmq.md): starting the broker, its settings, the dead-letter queues and the data volume.
+- [`CHANGELOG.md`](CHANGELOG.md): what changed in each release.
+- [Engineering standards](https://github.com/TechClusiveSolutions/cynthus/blob/dev/docs/engineering-standards.md):
+  branches, tests, lint and review.
